@@ -5,6 +5,7 @@ add_executable(mcc
     src/lexer/lexer.cpp
     src/parser/parser.cpp
     src/codegen/codegen.cpp
+    src/main.cpp src/lexer/lexer.cpp
 )
 
 target_include_directories(mcc PRIVATE include)
