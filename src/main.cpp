@@ -81,12 +81,16 @@ int main(int argc, char* argv[]){
                     cout<<i<<" : "<<"Semicolon\n";
                     break;
                 default:
+                    //case to help gather full digits
                     if(isdigit(static_cast<unsigned char>(c))){
                         size_t start = i;
                         string num = "";
+                        //cycles through digits till end
                         while (i<source.size()&&isdigit(static_cast<unsigned char>(source[i]))){
                             char d = source[i];
                              num =num + d;
+
+                            //prevents forbidden digit letter combos
                             if(isalpha(static_cast<unsigned char>(source[i+1]))||source[i+1]=='_'){
                                 cerr<<"\n----------WARNING----------\n"<< "error letter or undrscore follows digit: "<< "'"<<source[i+1]<<"'"<<"\n------------END------------\n";
                                 return 1;
@@ -95,22 +99,40 @@ int main(int argc, char* argv[]){
                             i++;
                         }
                         cout<<start<<" : Constant "<<num<<"\n";
+                        continue;//end of digit
+                    }
+                    if(isalpha(static_cast<unsigned char>(c))||c=='_'){
+                        size_t start = i;
+                        string word = "";
+                        string token;
+                        while(i<source.size()&&(isalnum(static_cast<unsigned char>(source[i]))|| source[i]=='_')){
+                            word = word+ source[i];
+                            i++;
+                        }
+                        if(word=="int"||word=="void"||word=="return"){
+                                token = "Keyword ";
+                        }
+                        else{
+                                token = "Identifier ";
+                        }
+                        cout<<start<<" : "<<token<<word<<"\n";
                         continue;
-                    }
+                        }
+                        
 
-                    else if (isalnum((unsigned char)c)||c == '_'){
-                        cout<<i<<" : "<<"(not handeled yeti) "<<c<<"\n";
-                        break;
-                    }
+                    
+
+
+                    
                     else{
                         cerr<<"\n----------WARNING----------\n"<< "error unexpected charachter: "<< "'"<<c<<"'"<<"\n------------END------------\n";
                         return 1;
-                    }
-            }
-        }
+                    }                   
+            }           
+        } 
 
         i++;
-    }
+}
 
     if(stop == "--lex"||stop=="--parse"||stop =="--codegen"){
         cout<<"compiling: "<<input<< "\n";
