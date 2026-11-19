@@ -3,6 +3,7 @@
 #include<cstdlib>
 #include<fstream>
 #include<cstdio>
+#include<cctype>
 using namespace std;
 
 int main(int argc, char* argv[]){
@@ -50,7 +51,66 @@ int main(int argc, char* argv[]){
         cerr<<"\n----------WARNING----------\npreproccessing failed for file : "<<input<<"\n------------END------------\n";
         return 1;
     }
+    //actual lexer
+    string source = "";
+    ifstream in(pre);
+    string line;
+    while(getline(in, line)){
+        source = source + line + "\n";
+    }
+    in.close();
     remove(pre.c_str());
+    size_t i = 0;
+    while(i<source.size()){
+        char c = source[i];
+        if (!isspace(c)){
+            switch(c){
+                case'(':
+                    cout<<i<<" : "<<"OpenParen\n";
+                    break;
+                case')':
+                    cout<<i<<" : "<<"ClosedParen\n";
+                    break;
+                case'{':
+                    cout<<i<<" : "<<"OpenBrace\n";
+                    break;
+                case'}':
+                    cout<<i<<" : "<<"ClosedBrace\n";
+                    break;
+                case';':
+                    cout<<i<<" : "<<"Semicolon\n";
+                    break;
+                default:
+                    if(isdigit(static_cast<unsigned char>(c))){
+                        size_t start = i;
+                        string num = "";
+                        while (i<source.size()&&isdigit(static_cast<unsigned char>(source[i]))){
+                            char d = source[i];
+                             num =num + d;
+                            if(isalpha(static_cast<unsigned char>(source[i+1]))||source[i+1]=='_'){
+                                cerr<<"\n----------WARNING----------\n"<< "error letter or undrscore follows digit: "<< "'"<<source[i+1]<<"'"<<"\n------------END------------\n";
+                                return 1;
+
+                            }
+                            i++;
+                        }
+                        cout<<start<<" : Constant "<<num<<"\n";
+                        continue;
+                    }
+
+                    else if (isalnum((unsigned char)c)||c == '_'){
+                        cout<<i<<" : "<<"(not handeled yeti) "<<c<<"\n";
+                        break;
+                    }
+                    else{
+                        cerr<<"\n----------WARNING----------\n"<< "error unexpected charachter: "<< "'"<<c<<"'"<<"\n------------END------------\n";
+                        return 1;
+                    }
+            }
+        }
+
+        i++;
+    }
 
     if(stop == "--lex"||stop=="--parse"||stop =="--codegen"){
         cout<<"compiling: "<<input<< "\n";
