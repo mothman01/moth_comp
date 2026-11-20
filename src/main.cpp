@@ -4,6 +4,7 @@
 #include<fstream>
 #include<cstdio>
 #include<cctype>
+#include<vector>
 #include "lexer/lexer.h"
 using namespace std;
 
@@ -61,13 +62,19 @@ int main(int argc, char* argv[]){
     }
     in.close();
     remove(pre.c_str());
-    int lexResult = lex(source);
+    vector<Token> tokens;
+    int lexResult = lex(source, tokens);
     if (lexResult != 0){
         return 1;
     }
     if(stop == "--lex"||stop=="--parse"||stop =="--codegen"){
         cout<<"compiling: "<<input<< "\n";
         cout<<"preprocessed: "<< pre<<"\n";
+        for (size_t k =0; k< tokens.size();k++){
+            cout<<tokens[k].pos <<" : "
+            <<kindName(tokens[k].kind)<< " "
+            << tokens[k].text<<"\n";
+        }
         
 
         return 0;

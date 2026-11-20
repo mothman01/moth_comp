@@ -4,26 +4,27 @@
 #include "lexer/lexer.h"
 using namespace std;
 
-int lex(const string& source){
+    int lex(const string& source, vector<Token>& tokens){
     size_t i = 0;
         while(i<source.size()){
             char c = source[i];
             if (!isspace(c)){
                 switch(c){
                     case'(':
-                        cout<<i<<" : "<<"OpenParen\n";
+                        tokens.push_back(Token{TokenKind::OpenParen, "(", i}); 
                         break;
                     case')':
-                        cout<<i<<" : "<<"ClosedParen\n";
+                        tokens.push_back(Token{TokenKind::CloseParen, ")",i});
                         break;
                     case'{':
-                        cout<<i<<" : "<<"OpenBrace\n";
+                        tokens.push_back(Token{TokenKind::OpenBrace, "{", i});
                         break;
                     case'}':
-                        cout<<i<<" : "<<"ClosedBrace\n";
+                        tokens.push_back(Token{TokenKind::CloseBrace, "}", i});
                         break;
                     case';':
-                        cout<<i<<" : "<<"Semicolon\n";
+                        tokens.push_back(Token{TokenKind::Semicolon, ";", i});
+
                         break;
                     default:
                         //case to help gather full digits
@@ -43,30 +44,34 @@ int lex(const string& source){
                                 }
                                 i++;
                             }
-                            cout<<start<<" : Constant "<<num<<"\n";
+                            tokens.push_back(Token{TokenKind::Constant, num, start});
                             continue;//end of digit
                         }
                         if(isalpha(static_cast<unsigned char>(c))||c=='_'){
                             size_t start = i;
                             string word = "";
-                            string token;
+                            TokenKind kind;
                             while(i<source.size()&&(isalnum(static_cast<unsigned char>(source[i]))|| source[i]=='_')){
                                 word = word+ source[i];
                                 i++;
                             }
-                            if(word=="int"||word=="void"||word=="return"){
-                                    token = "Keyword ";
+                            if(word=="int"){
+                                kind = TokenKind::KwInt;
+
+                            }
+                            else if(word=="void"){
+                                kind = TokenKind::KwVoid;
+                            }
+
+                            else if(word=="return"){
+                                    kind = TokenKind::KwReturn;
                             }
                             else{
-                                    token = "Identifier ";
+                                    kind = TokenKind::Identifier;
                             }
-                            cout<<start<<" : "<<token<<word<<"\n";
+                            tokens.push_back(Token{kind, word, start});
                             continue;
                             }
-                            
-
-                        
-
 
                         
                         else{
@@ -79,4 +84,20 @@ int lex(const string& source){
             i++;
     }
     return 0;
+}
+
+string kindName(TokenKind k) {
+    switch (k) {
+        case TokenKind::OpenParen: return "OpenParen";
+        case TokenKind::CloseParen: return "CloseParen";
+        case TokenKind::OpenBrace: return "OpenBrace";
+        case TokenKind::CloseBrace: return "CloseBrace";
+        case TokenKind::Semicolon: return "Semicolon";
+        case TokenKind::Constant: return "Constant";
+        case TokenKind::Identifier: return "Identifier";
+        case TokenKind::KwInt: return "KwInt";
+        case TokenKind::KwVoid: return "KwVoid";
+        case TokenKind:: KwReturn: return "kwReturn";
+    }
+    return "Unknown";
 }
