@@ -7,6 +7,7 @@
 #include<vector>
 #include "lexer/lexer.h"
 #include "parser/parser.h"
+#include "codegen/codegen.h"
 using namespace std;
 
 int main(int argc, char* argv[]){
@@ -78,16 +79,21 @@ int main(int argc, char* argv[]){
     }
     Program program = parseProgram(tokens);
 
-    if(stop=="--parse"||stop =="--codegen"){
-       printProgram(program); 
-
+    if(stop=="--parse"){
+        printProgram(program); 
+        
         return 0;
     }
+    
+    string asmText = generate(program);
+    if("--codegen"==stop){
+        cout<<asmText;
+        return 0;
+    }
+
+
     ofstream out(assem);
-    out<<"  .globl main\n";
-    out<<"main:\n";
-    out<<"  movl $42, %eax\n";
-    out<<"  ret\n";
+    out<< asmText;
     out.close();
 
     if (stop == "-S"){
