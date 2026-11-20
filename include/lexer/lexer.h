@@ -3,7 +3,7 @@
 #include<vector>
 enum class TokenKind{
     OpenParen, CloseParen, OpenBrace, CloseBrace, Semicolon, Constant, Identifier, KwInt,
-    KwVoid,KwReturn
+    KwVoid,KwReturn,Tilde,Hyphen,Decrement
 };
 
 

@@ -24,8 +24,25 @@ using namespace std;
                         break;
                     case';':
                         tokens.push_back(Token{TokenKind::Semicolon, ";", i});
-
                         break;
+                    case '~':
+                        tokens.push_back(Token{TokenKind::Tilde,"~",i});
+                        break;
+                    case '-':
+                        if(i+1<source.size() && source[i+1]=='-'){
+                            tokens.push_back(Token{TokenKind::Decrement,"--",i});
+                            i+=2;
+                            continue;
+                        }
+                        else{
+                            tokens.push_back(Token{TokenKind::Hyphen,"-",i});
+                            break;
+
+                        }
+
+                        
+                    
+
                     default:
                         //case to help gather full digits
                         if(isdigit(static_cast<unsigned char>(c))){
@@ -97,7 +114,10 @@ string kindName(TokenKind k) {
         case TokenKind::Identifier: return "Identifier";
         case TokenKind::KwInt: return "KwInt";
         case TokenKind::KwVoid: return "KwVoid";
-        case TokenKind:: KwReturn: return "KwReturn";
+        case TokenKind::KwReturn: return "KwReturn";
+        case TokenKind::Tilde: return "Tilde";
+        case TokenKind::Hyphen: return "Hyphen";
+        case TokenKind::Decrement: return "Decrement";
     }
     return "Unknown";
 }
