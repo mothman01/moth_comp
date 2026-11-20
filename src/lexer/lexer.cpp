@@ -97,7 +97,7 @@ string kindName(TokenKind k) {
         case TokenKind::Identifier: return "Identifier";
         case TokenKind::KwInt: return "KwInt";
         case TokenKind::KwVoid: return "KwVoid";
-        case TokenKind:: KwReturn: return "kwReturn";
+        case TokenKind:: KwReturn: return "KwReturn";
     }
     return "Unknown";
 }
