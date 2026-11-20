@@ -6,7 +6,7 @@
 using namespace std;
 
 
-void expect(const vector<Token>& tokens,size_t& pos, TokenKind kind){
+Token expect(const vector<Token>& tokens,size_t& pos, TokenKind kind){
     if(pos>=tokens.size()){
         cerr<<"---------WARNING----------\n"
             <<" error: unexpected end of file. expected input "
@@ -26,40 +26,43 @@ void expect(const vector<Token>& tokens,size_t& pos, TokenKind kind){
             exit(1);
 
         }
+    Token t = tokens[pos];
     pos++;
+    return t;
 }
 
-void parseExp(const vector<Token>& tokens, size_t& pos){
-    expect(tokens, pos, TokenKind::Constant);
-
+Constant parseExp(const vector<Token>& tokens, size_t& pos){
+    Token t =expect(tokens, pos, TokenKind::Constant);
+    return Constant{stoi(t.text)};
 
 }
 
-void parseStatement(const vector<Token>& tokens, size_t& pos){
+Return parseStatement(const vector<Token>& tokens, size_t& pos){
     expect(tokens, pos, TokenKind::KwReturn);
-    parseExp(tokens, pos);
+    Constant exp = parseExp(tokens, pos);
     expect(tokens, pos, TokenKind::Semicolon);
+    return Return{exp};
 
 
 
 }
 
-void parseFunction(const vector<Token>& tokens, size_t& pos){
+Function parseFunction(const vector<Token>& tokens, size_t& pos){
     expect(tokens, pos, TokenKind::KwInt);
-    expect(tokens, pos, TokenKind::Identifier);
+    Token name = expect(tokens, pos, TokenKind::Identifier);
     expect(tokens, pos, TokenKind::OpenParen);
     expect(tokens, pos, TokenKind::KwVoid);
     expect(tokens, pos, TokenKind::CloseParen);
     expect(tokens, pos, TokenKind::OpenBrace);
-    parseStatement(tokens, pos);
+    Return body = parseStatement(tokens, pos);
     expect(tokens, pos, TokenKind::CloseBrace);
-
+    return Function{name.text, body};
 
 }
 
-void parseProgram(const vector<Token>& tokens){
+Program parseProgram(const vector<Token>& tokens){
     size_t pos = 0;
-    parseFunction(tokens, pos);
+    Function func = parseFunction(tokens, pos);
     if (pos != tokens.size()){
         cerr<<"---------WARNING----------\n"
         <<" unexpected "
@@ -70,8 +73,23 @@ void parseProgram(const vector<Token>& tokens){
          <<"\n------------END------------\n";
         exit(1);
 
+    
     }
+    return Program{func};
 
+}
+
+void printProgram(const Program& p){
+    cout<<"Program\n"
+    <<"  Function "
+    <<p.function.name
+    <<"\n    "
+    <<"Return "
+    <<"\n      "
+    <<"Constant"
+    <<" "
+    <<p.function.body.exp.value
+    <<"\n";
 
 }
 

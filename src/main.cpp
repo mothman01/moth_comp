@@ -76,12 +76,10 @@ int main(int argc, char* argv[]){
         }
         return 0;
     }
-    parseProgram(tokens);
+    Program program = parseProgram(tokens);
 
     if(stop=="--parse"||stop =="--codegen"){
-        cout<<"compiling: "<<input<< "\n";
-        cout<<"preprocessed: "<< pre<<"\n";
-        
+       printProgram(program); 
 
         return 0;
     }
