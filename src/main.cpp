@@ -6,6 +6,7 @@
 #include<cctype>
 #include<vector>
 #include "lexer/lexer.h"
+#include "parser/parser.h"
 using namespace std;
 
 int main(int argc, char* argv[]){
@@ -67,14 +68,19 @@ int main(int argc, char* argv[]){
     if (lexResult != 0){
         return 1;
     }
-    if(stop == "--lex"||stop=="--parse"||stop =="--codegen"){
-        cout<<"compiling: "<<input<< "\n";
-        cout<<"preprocessed: "<< pre<<"\n";
+    if(stop == "--lex"){
         for (size_t k =0; k< tokens.size();k++){
             cout<<tokens[k].pos <<" : "
             <<kindName(tokens[k].kind)<< " "
             << tokens[k].text<<"\n";
         }
+        return 0;
+    }
+    parseProgram(tokens);
+
+    if(stop=="--parse"||stop =="--codegen"){
+        cout<<"compiling: "<<input<< "\n";
+        cout<<"preprocessed: "<< pre<<"\n";
         
 
         return 0;
